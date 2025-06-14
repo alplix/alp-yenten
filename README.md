@@ -1,4 +1,4 @@
-# alplix-yenten (Yenten Full Node)
+# alp-yenten (Yenten Full Node)
 
 This is a clean and minimal version of the Yenten full node, adapted and maintained by [Alplix](https://coff.ee/alplix).  
 Hosted at: [https://github.com/alplix/alp-yenten](https://github.com/alplix/alp-yenten)
