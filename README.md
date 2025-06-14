@@ -1,66 +1,75 @@
-# 🛠️ Cross-Platform Build & Install Instructions for alplix-yenten
+# alplix-yenten (Yenten Full Node)
 
-This document provides step-by-step instructions for building and running the Yenten full node (`alplix-yenten`) across major UNIX-like systems, including Debian-based Linux, Arch, Gentoo, macOS, BSD, and more.
-
----
-
-## 📦 REQUIRED DEPENDENCIES (ALL SYSTEMS)
-
-- gcc / clang
-- g++
-- make / autotools
-- pkg-config
-- OpenSSL
-- Boost
-- libevent
-- Berkeley DB (optional, for wallet support)
+This is a clean and minimal version of the Yenten full node, adapted and maintained by [Alplix](https://coff.ee/alplix).  
+It is hosted at: [https://github.com/alplix/alp-yenten](https://github.com/alplix/alp-yenten)
 
 ---
 
-## 🔧 SYSTEM-SPECIFIC INSTRUCTIONS
+## ✅ Features
 
-### 🐧 Debian / Ubuntu / Linux Mint
+- No wallet or GUI – lightweight node only
+- IPv4, IPv6, and Tor support
+- Custom peer identifier: `/alplix-yenten:(coff.ee/alplix)/`
+- Cross-platform support for Linux, BSD, macOS, Gentoo, and more
+
+---
+
+## 📦 Supported Platforms
+
+- Debian / Ubuntu / Linux Mint
+- Arch / Manjaro
+- Gentoo
+- macOS (Homebrew)
+- FreeBSD / OpenBSD
+
+---
+
+## 📁 Step-by-Step Installation
+
+### 1. Clone the Repository
 
 ```bash
-sudo apt update
-sudo apt install build-essential libtool autotools-dev automake pkg-config   libssl-dev libevent-dev bsdmainutils git curl libboost-all-dev
+git clone https://github.com/alplix/alp-yenten.git
+cd alp-yenten
 ```
 
-### 🐧 Arch Linux / Manjaro
+### 2. Install Required Packages
 
+#### Debian / Ubuntu:
+```bash
+sudo apt update
+sudo apt install build-essential libtool autotools-dev automake pkg-config \
+  libssl-dev libevent-dev bsdmainutils git curl libboost-all-dev
+```
+
+#### Arch Linux / Manjaro:
 ```bash
 sudo pacman -Syu base-devel git boost openssl libevent
 ```
 
-### 🐧 Gentoo Linux
-
+#### Gentoo:
 ```bash
-sudo emerge --ask sys-devel/gcc sys-devel/make sys-devel/automake   sys-devel/autoconf dev-libs/boost dev-libs/openssl dev-libs/libevent
+sudo emerge --ask sys-devel/gcc sys-devel/make sys-devel/automake \
+  dev-libs/boost dev-libs/openssl dev-libs/libevent
 ```
 
-> You may need to enable the correct `USE` flags for Boost and OpenSSL.
-
-### 🍎 macOS (with Homebrew)
-
+#### macOS (Homebrew):
 ```bash
 brew install automake autoconf libtool pkg-config boost openssl@3 libevent
-```
 
-> Ensure OpenSSL path is available to the build system:
-```bash
+# Configure paths for OpenSSL:
 export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
 ```
 
-### 🐚 FreeBSD / OpenBSD
-
+#### FreeBSD / OpenBSD:
 ```bash
 pkg install git gmake boost-libs openssl libevent autoconf automake libtool
 ```
 
 ---
 
-## 🔨 BUILD
+## 🛠️ Build the Node
 
 ```bash
 ./autogen.sh
@@ -68,57 +77,27 @@ pkg install git gmake boost-libs openssl libevent autoconf automake libtool
 make -j$(nproc)
 ```
 
-> On BSD systems, replace `make` with `gmake`.
+> ⚠️ On BSD systems, use `gmake` instead of `make`.
 
 ---
 
-## 🚀 RUNNING THE NODE
+## 🚀 Run the Node
 
 ```bash
 ./src/yentend -printtoconsole
 ```
 
-You can create a minimal `yenten.conf` in `~/.yenten/` to configure ports, Tor, peers, etc.
+Use a minimal configuration file at `~/.yenten/yenten.conf` for persistent settings.
 
 ---
 
-## 🔄 SYSTEMD AUTO-START (Linux)
-
-Create a file: `/etc/systemd/system/yenten.service`
-
-```ini
-[Unit]
-Description=Yenten Full Node (alplix-yenten)
-After=network.target
-
-[Service]
-ExecStart=/path/to/src/yentend -conf=/path/to/yenten.conf
-User=youruser
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Then:
-
-```bash
-sudo systemctl daemon-reexec
-sudo systemctl enable yenten
-sudo systemctl start yenten
-```
-
----
-
-## 🧅 TOR SUPPORT (Optional)
-
-Install and start Tor:
+## 🧅 Enable Tor (Optional)
 
 ```bash
 sudo apt install tor
 ```
 
-In `yenten.conf`:
+Example `yenten.conf`:
 
 ```
 onlynet=onion
@@ -130,23 +109,50 @@ bind=127.0.0.1
 
 ---
 
-## 📁 DATA DIRECTORY
+## 🔄 Auto-Start on Boot (systemd)
 
-Default directory: `~/.yenten`
+Create `/etc/systemd/system/yenten.service`:
 
-To use a custom data directory:
+```ini
+[Unit]
+Description=Yenten Full Node (alplix-yenten)
+After=network.target
+
+[Service]
+ExecStart=/home/youruser/alp-yenten/src/yentend -conf=/home/youruser/.yenten/yenten.conf
+User=youruser
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+
 ```bash
-./src/yentend -datadir=/your/custom/path
+sudo systemctl daemon-reexec
+sudo systemctl enable yenten
+sudo systemctl start yenten
 ```
 
 ---
 
-## 📌 TROUBLESHOOTING
+## 📌 Peer Identifier
 
-- Missing Boost: Ensure development headers are installed
-- OpenSSL not found: Set `CPPFLAGS` and `LDFLAGS`
-- `cannot find -lboost_*`: Use static linking or install full Boost suite
+This node will appear in the peer list as:
+
+```
+/alplix-yenten:(coff.ee/alplix)/
+```
 
 ---
 
-Maintained by [Alplix](https://coff.ee/alplix) | [GitHub](https://github.com/alplix)
+## 🔗 Links
+
+- Project page: [https://github.com/alplix/alp-yenten](https://github.com/alplix/alp-yenten)
+- Maintainer: [https://coff.ee/alplix](https://coff.ee/alplix)
+- More projects: [https://github.com/alplix](https://github.com/alplix)
+
+---
+
+This repository is part of the decentralized node infrastructure maintained by **Alplix**.
