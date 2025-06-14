@@ -1288,6 +1288,7 @@ fi
 ac_configure_args="${ac_configure_args} --disable-shared --with-pic --with-bignum=no --enable-module-recovery --disable-jni"
 AC_CONFIG_SUBDIRS([src/secp256k1])
 
+AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
 
 dnl Taken from https://wiki.debian.org/RpathIssue
